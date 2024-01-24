@@ -1,61 +1,40 @@
 <template>
-    <div id="tabla-clientes" class="container">
-
-        <nav class="navbar navbar-dark bg-primary">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <a class="navbar-brand" href="#">Inicio</a>
-                <a class="navbar-brand" href="#">Clientes</a>
-                <a class="navbar-brand" href="#">Artículos</a>
-                <a class="navbar-brand" href="#">Ventas</a>
-                <div class="d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search">
-                    <button class="btn btn-light" type="submit" data-v-f0802bba=""><i class="bi bi-search"
-                            data-v-f0802bba=""></i></button>
-                </div>
-                <div class="collapse navbar-collapse" id="navbarToggleExternalContent" data-v-f0802bba="">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" data-v-f0802bba="">
-                        <li class="nav-item" data-v-f0802bba=""><a class="nav-link" href="#"
-                                data-v-f0802bba="">Articulos</a></li>
-                        <li class="nav-item" data-v-f0802bba=""><a class="nav-link" href="#" data-v-f0802bba="">Ventas</a>
-                        </li>
-                        <li class="nav-item" data-v-f0802bba=""><a class="nav-link" href="#" data-v-f0802bba="">Contacto</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        <br>
+        <div>
+            <!-- Barra de navegación -->
+            <NavBar/>
+        </div>
+        <br/>
         <div class="row">
             <h3 class="text-center font-weight-bold">Gestión clientes</h3>
         </div>
-        <hr>
-        <!-- Formulario -->
+        <hr> <!-- Formulario -->
         <div class="container-fluid">
             <div class="row" id="map_section">
                 <div class="col-12 col-m-6 col-lg-8 mx-auto">
                     <form class="form-inline">
-                        <div class="input-group mb-3"><span class="input-group-text custom-span">DNI:</span><input
-                                type="text" class="form-control form-control-sm" id="dni" name="dni" @blur="validarDniNie">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text custom-span">DNI:</span>
+                            <input v-model="dni" type="text" class="form-control form-control-sm" id="dni" name="dni">
                         </div>
-                        <div class="input-group mb-3"><span class="input-group-text custom-span">Nombre:</span><input
-                                type="text" class="form-control" id="nombre" name="nombre"></div>
-                        <div class="input-group mb-3"><span class="input-group-text custom-span">Apellido:</span><input
-                                type="text" class="form-control" id="apellido" name="apellido"></div>
-                        <div class="input-group mb-3"><span class="input-group-text custom-span">Email:</span><input
-                                type="text" class="form-control" id="email" name="email"></div>
-                        <div class="text-center"><button type="button" class="btn btn-primary m-2"
-                                @click="guardar">Guardar</button><button type="button" class="btn btn-secondary"
-                                @click="limpiar">Limpiar</button></div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text custom-span">Nombre:</span>
+                            <input v-model="nombre" type="text" class="form-control" id="nombre" name="nombre">
+                        </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text custom-span">Apellido:</span>
+                            <input v-model="apellido" type="text" class="form-control" id="apellido" name="apellido"></div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text custom-span">Email:</span>
+                            <input v-model="email" type="text" class="form-control" id="email" name="email"></div>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-primary m-2" @click="guardar">Guardar</button>
+                            <button type="button" class="btn btn-secondary" @click="limpiar">Limpiar</button>
+                        </div>
                     </form>
                 </div>
             </div>
         </div>
-        <hr>
+        <hr/> <!-- Tabla de datos -->
         <div class="row">
             <h5 class="text-center font-weight-bold">Listado Clientes</h5>
         </div>
@@ -71,18 +50,17 @@
             </thead>
             <tbody>
                 <tr v-for="cliente in clientes" :key="cliente.id">
-                    <td>{{ cliente.nombre }}</td>
-                    <td>{{ cliente.apellido }}</td>
-                    <td>{{ cliente.dni }}</td>
-                    <td>{{ cliente.email }}</td>
-                    <td>
-                        <button class="btn btn-warning"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-danger"><i class="bi bi-trash3"></i></button>
+                    <td>{{cliente.nombre}}</td>
+                    <td>{{cliente.apellido}}</td>
+                    <td class="text-center">{{cliente.dni}}</td>
+                    <td>{{cliente.email}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning m-2"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger m-2"><i class="bi bi-trash3"></i></button>
                     </td>
                 </tr>
             </tbody>
         </table>
-    </div>
 </template>
 
 <script>
@@ -136,6 +114,9 @@ export default {
                     email: this.email.trim(),
                 };
 
+                if (!this.validarDniNie()) {
+                    return;
+                }
                 // Agregar el nuevo cliente al array clientes
                 this.clientes.push(nuevoCliente)
 
@@ -143,8 +124,7 @@ export default {
                 this.nombre = nuevoCliente.nombre;
                 this.apellido = nuevoCliente.apellido;
                 this.dni = nuevoCliente.dni;
-                this.email = nuevoCliente, this.email;
-
+                this.email = nuevoCliente.email;
                 // Mostrar alerta de éxito
                 this.mostrarAlerta('Cliente guardado correctamente', 'success');
             }
@@ -162,34 +142,34 @@ export default {
             return;
         },
 
-        // Validar DNI o NIE
         validarDniNie() {
-            const dniNie = this.dni.trim().toUpperCase(); // Convierte a mayúsculas para simplificar la validación
-            this.dni = dniNie; // Actualiza el valor del campo
-            // Expresión regular para validar DNI y NIE
-            const regexDniNie = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
-
-            if (!regexDniNie.test(dniNie)) {
-                this.mostrarAlerta('DNI o NIE no válido', 'error');
-                this.dni = ''; // Limpiar el campo si el DNI o NIE no es válido
-                return;
+        let dniNie = this.dni.trim().toUpperCase();
+        this.dni = dniNie;
+        const regexDniNie = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+        switch (dniNie.charAt(0)) {
+            case 'X': {
+                dniNie = '0'+dniNie.slice(1);
+                break
             }
-            // Validar el dígito de control
-            const numero = parseInt(dniNie.slice(0, 8), 10);
-            let letraCalculada = '';
-
-            // Verificar si es un NIE (XYZ)
-            if (dniNie.charAt(0) === 'X' || dniNie.charAt(0) === 'Y' || dniNie.charAt(0) === 'Z') {
-                letraCalculada = 'TRWAGMYFPDXBNJZSQVHLCKE'.charAt(numero % 23);
-            } else {
-                letraCalculada = 'TRWAGMYFPDXBNJZSQVHLCKE'.charAt(numero % 23);
+            case 'Y': {
+                dniNie = '1'+dniNie.slice(1);
+                break
             }
-
-            if (letraCalculada !== dniNie.charAt(8)) {
-                this.mostrarAlerta('DNI o NIE no válido', 'error');
-                this.dni = ''; // Limpiar el campo si el DNI no es válido
+            case 'Z': {
+                dniNie = '2'+dniNie.slice(1);
+                break
             }
-        },
+            default: break;
+        }
+        const numero = parseInt(dniNie.slice(0,8), 10);
+        const letraCalculada = 'TRWAGMYFPDXBNJZSQVHLCKE'.charAt(numero%23);
+        if (letraCalculada !== dniNie.charAt(8) || !regexDniNie.test(dniNie)) { 
+            this.mostrarAlerta('DNI/NIE no válido', 'error');
+            return false;
+        } else {
+            return true;
+        }
+    },
         // Mostrar ventana alerta
         mostrarAlerta(mensaje, tipo) {
             Swal.fire({
