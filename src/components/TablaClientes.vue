@@ -1,66 +1,70 @@
 <template>
-        <div>
-            <!-- Barra de navegación -->
-            <NavBar/>
-        </div>
-        <br/>
-        <div class="row">
-            <h3 class="text-center font-weight-bold">Gestión clientes</h3>
-        </div>
-        <hr> <!-- Formulario -->
-        <div class="container-fluid">
-            <div class="row" id="map_section">
-                <div class="col-12 col-m-6 col-lg-8 mx-auto">
-                    <form class="form-inline">
-                        <div class="input-group mb-3">
-                            <span class="input-group-text custom-span">DNI:</span>
-                            <input v-model="dni" type="text" class="form-control form-control-sm" id="dni" name="dni">
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text custom-span">Nombre:</span>
-                            <input v-model="nombre" type="text" class="form-control" id="nombre" name="nombre">
-                        </div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text custom-span">Apellido:</span>
-                            <input v-model="apellido" type="text" class="form-control" id="apellido" name="apellido"></div>
-                        <div class="input-group mb-3">
-                            <span class="input-group-text custom-span">Email:</span>
-                            <input v-model="email" type="text" class="form-control" id="email" name="email"></div>
-                        <div class="text-center">
-                            <button type="button" class="btn btn-primary m-2" @click="guardar">Guardar</button>
-                            <button type="button" class="btn btn-secondary" @click="limpiar">Limpiar</button>
-                        </div>
-                    </form>
-                </div>
+    <div>
+        <!-- Barra de navegación -->
+        <NavBar />
+    </div>
+    <br />
+    <div class="row">
+        <h3 class="text-center font-weight-bold">Gestión clientes</h3>
+    </div>
+    <hr> <!-- Formulario -->
+    <div class="container-fluid">
+        <div class="row" id="map_section">
+            <div class="col-12 col-m-6 col-lg-8 mx-auto">
+                <form class="form-inline">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text custom-span">DNI:</span>
+                        <input v-model="dni" type="text" class="form-control form-control-sm" id="dni" name="dni">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text custom-span">Nombre:</span>
+                        <input v-model="nombre" type="text" class="form-control" id="nombre" name="nombre">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text custom-span">Apellido:</span>
+                        <input v-model="apellido" type="text" class="form-control" id="apellido" name="apellido">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text custom-span">Email:</span>
+                        <input v-model="email" type="text" class="form-control" id="email" name="email">
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary m-2" @click="guardar">Guardar</button>
+                        <button type="button" class="btn btn-secondary" @click="limpiar">Limpiar</button>
+                    </div>
+                </form>
             </div>
         </div>
-        <hr/> <!-- Tabla de datos -->
-        <div class="row">
-            <h5 class="text-center font-weight-bold">Listado Clientes</h5>
-        </div>
-        <table class="table table-striped  table-bordered">
-            <thead class="table-info">
-                <tr class="text-center">
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>DNI</th>
-                    <th>E-mail</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr v-for="cliente in clientes" :key="cliente.id">
-                    <td>{{cliente.nombre}}</td>
-                    <td>{{cliente.apellido}}</td>
-                    <td class="text-center">{{cliente.dni}}</td>
-                    <td>{{cliente.email}}</td>
-                    <td class="text-center">
-                        <button class="btn btn-warning m-2"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-danger m-2"><i class="bi bi-trash3"></i></button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    </div>
+    <hr /> <!-- Tabla de datos -->
+    <div class="row">
+        <h5 class="text-center font-weight-bold">Listado Clientes</h5>
+    </div>
+    <table class="table table-striped  table-bordered">
+        <thead class="table-info">
+            <tr class="text-center">
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DNI</th>
+                <th>E-mail</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="cliente in clientes" :key="cliente.id">
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.apellido }}</td>
+                <td class="text-center">{{ cliente.dni }}</td>
+                <td>{{ cliente.email }}</td>
+                <td class="text-center">
+                    <div>
+                        <button class="btn btn-warning m-2" @click="modificarCliente(cliente.id)"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger m-2" @click="eliminarCliente(cliente.id)"><i class="bi bi-trash3"></i></button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </template>
 
 <script>
@@ -143,33 +147,33 @@ export default {
         },
 
         validarDniNie() {
-        let dniNie = this.dni.trim().toUpperCase();
-        this.dni = dniNie;
-        const regexDniNie = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
-        switch (dniNie.charAt(0)) {
-            case 'X': {
-                dniNie = '0'+dniNie.slice(1);
-                break
+            let dniNie = this.dni.trim().toUpperCase();
+            this.dni = dniNie;
+            const regexDniNie = /^[0-9XYZ][0-9]{7}[TRWAGMYFPDXBNJZSQVHLCKE]$/;
+            switch (dniNie.charAt(0)) {
+                case 'X': {
+                    dniNie = '0' + dniNie.slice(1);
+                    break
+                }
+                case 'Y': {
+                    dniNie = '1' + dniNie.slice(1);
+                    break
+                }
+                case 'Z': {
+                    dniNie = '2' + dniNie.slice(1);
+                    break
+                }
+                default: break;
             }
-            case 'Y': {
-                dniNie = '1'+dniNie.slice(1);
-                break
+            const numero = parseInt(dniNie.slice(0, 8), 10);
+            const letraCalculada = 'TRWAGMYFPDXBNJZSQVHLCKE'.charAt(numero % 23);
+            if (letraCalculada !== dniNie.charAt(8) || !regexDniNie.test(dniNie)) {
+                this.mostrarAlerta('DNI/NIE no válido', 'error');
+                return false;
+            } else {
+                return true;
             }
-            case 'Z': {
-                dniNie = '2'+dniNie.slice(1);
-                break
-            }
-            default: break;
-        }
-        const numero = parseInt(dniNie.slice(0,8), 10);
-        const letraCalculada = 'TRWAGMYFPDXBNJZSQVHLCKE'.charAt(numero%23);
-        if (letraCalculada !== dniNie.charAt(8) || !regexDniNie.test(dniNie)) { 
-            this.mostrarAlerta('DNI/NIE no válido', 'error');
-            return false;
-        } else {
-            return true;
-        }
-    },
+        },
         // Mostrar ventana alerta
         mostrarAlerta(mensaje, tipo) {
             Swal.fire({
@@ -223,16 +227,18 @@ export default {
 </script>
 
 <style>
-    .btn-no-hover:hover { /* no cambie de color */
-        background-color: white !important;
-        border-color: white !important;
-    }
-    .btno-no-hover i {
-        color: #000000 !important;
-    }
-    .custom-span {
-        width: 120px;
-        display: inline-block;
-        text-align: left;
-    }
-</style>
+.btn-no-hover:hover {
+    /* no cambie de color */
+    background-color: white !important;
+    border-color: white !important;
+}
+
+.btno-no-hover i {
+    color: #000000 !important;
+}
+
+.custom-span {
+    width: 120px;
+    display: inline-block;
+    text-align: left;
+}</style>
