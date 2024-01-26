@@ -130,7 +130,7 @@ export default {
                 // AHora hacemos una solicitud directamente al servidor JSON
                 const response = await fetch('http://localhost:3000/clientes')
 
-                if(!response.ok) {
+                if (!response.ok) {
                     throw new Error('No se pudieron obtener los datos del servidor')
                 }
 
@@ -138,7 +138,7 @@ export default {
 
                 // Asignamos los clientes a la variable del componente
                 this.clientes = data
-            } catch(error) {
+            } catch (error) {
                 console.log("Error al obtener los clientes:", error)
                 // Manejo de errores
                 Swal.fire({
@@ -147,6 +147,47 @@ export default {
                     text: 'No se pudieron obtener los datos del servidor.'
                 })
             }
+        },
+        async eliminarCliente(clienteId) {
+            // Mostrar ventada de confirmación
+            const confirmacion = await this.mostrarConfirmacionEliminar()
+
+            // Verificar si se confirmó la eliminación
+            if (confirmacion) {
+                // Realizar la lógica de eliminación
+                const index = this.clientes.findIndex(cliente => cliente.id === clienteId)
+
+                if (index != -1) {
+                    this.clientes.splice(index, 1)
+                    await fetch(`http://localhost:3000/clientes/${clienteId}`), {
+                        method: 'DELETE',
+                    }
+                    // Mostrar alerta de éxito
+                    this.mostrarAlerta('Cliente eliminado correctamente', 'succes')
+                } else {
+                    this.mostrarAlerta('Cliente no encontrado', 'error')
+                }
+            }
+        },
+        async mostrarConfirmacionEliminar() {
+            // Mostrar ventana de confirmación
+            const confirmacion = await Swal.fire({
+                title: '¿Estás seguro de que deseas eliminar este cliente?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar',
+                customClass: {
+                    container: 'custom-alert-container',
+                    popup: 'custom-alert',
+                    confirmButton: 'custom-alert-button',
+                    cancelButton: 'custom-alert-button',
+                },
+            });
+
+            return confirmacion.isConfirmed;
         },
         guardar() {
             // Controlar los campos que están vacíos
@@ -232,7 +273,7 @@ export default {
             })
         },
         // Eliminar cliente
-        eliminarCliente(clienteId) {
+        /*eliminarCliente(clienteId) {
             // Encontrar el código
             const index = this.clientes.findIndex(cliente => cliente.id === clienteId);
 
@@ -247,7 +288,7 @@ export default {
                 // mostrar alerta de error si el cliente no existe
                 this.mostrarAlerta('Cliente no econtrado', 'error');
             }
-        },
+        },*/
         modificarCliente(clienteId) {
             // buscar el cliente con el ID dado
             const cliente = this.clientes.find(cliente => cliente.id === clienteId);
