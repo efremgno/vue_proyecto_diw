@@ -37,9 +37,47 @@
         </div>
     </div>
     <hr /> <!-- Tabla de datos -->
+    <!--
     <div class="row">
         <h5 class="text-center font-weight-bold">Listado Clientes</h5>
+    </div> -->
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-8 bg-light">
+            <div class="row justify-content-center text-primary p-2">
+                <h5 class="text-center font-weight-bold">Listado Clientes</h5>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered">
+                    <thead class="table-info">
+                        <tr class="text-center">
+                            <th>DNI</th>
+                            <th>Apellido</th>
+                            <th>Nombre</th>
+                            <th>Correo Electrónico</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="cliente in clientes" :key="cliente.id">
+                            <td class="text-center">{{ cliente.dni }}</td>
+                            <td>{{ cliente.apellido }}</td>
+                            <td>{{ cliente.nombre }}</td>
+                            <td>{{ cliente.email }}</td>
+                            <td class="text-center">
+                                <div>
+                                    <button class="btn btn-warning m-2" @click="modificarCliente(cliente.id)"><i
+                                            class="bi bi-pencil-square"></i></button>
+                                    <button class="btn btn-danger m-2" @click="eliminarCliente(cliente.id)"><i
+                                            class="bi bi-trash3"></i></button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
+    <!-- 
     <table class="table table-striped  table-bordered">
         <thead class="table-info">
             <tr class="text-center">
@@ -58,13 +96,15 @@
                 <td>{{ cliente.email }}</td>
                 <td class="text-center">
                     <div>
-                        <button class="btn btn-warning m-2" @click="modificarCliente(cliente.id)"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn btn-danger m-2" @click="eliminarCliente(cliente.id)"><i class="bi bi-trash3"></i></button>
+                        <button class="btn btn-warning m-2" @click="modificarCliente(cliente.id)"><i
+                                class="bi bi-pencil-square"></i></button>
+                        <button class="btn btn-danger m-2" @click="eliminarCliente(cliente.id)"><i
+                                class="bi bi-trash3"></i></button>
                     </div>
                 </td>
             </tr>
         </tbody>
-    </table>
+    </table>-->
 </template>
 
 <script>
@@ -73,36 +113,41 @@ export default {
     name: 'TablaClientes',
     data() {
         return {
+            clientes: [],
+            clienteSeleccionado: null,
+            dni: '',
             nombre: '',
             apellido: '',
-            dni: '',
             email: '',
-            clientes: [
-                {
-                    id: 1,
-                    nombre: 'Juan',
-                    apellido: 'Pérez',
-                    dni: '12345678Z',
-                    email: 'jaunperez@gmail.com'
-                },
-                {
-                    id: 2,
-                    nombre: 'María',
-                    apellido: 'Abal',
-                    dni: '29345678V',
-                    email: 'maria@gmail.com'
-                },
-                {
-                    id: 3,
-                    nombre: 'Pedro',
-                    apellido: 'García',
-                    dni: '31245678C',
-                    email: 'pedro@gmail.com'
-                }
-            ]
-        }
+        };
+    },
+    mounted() {
+        this.obtenerClientes() // Llama a la función para obtener clientes cuando el componente se monta
     },
     methods: {
+        async obtenerClientes() {
+            try {
+                // AHora hacemos una solicitud directamente al servidor JSON
+                const response = await fetch('http://localhost:3000/clientes')
+
+                if(!response.ok) {
+                    throw new Error('No se pudieron obtener los datos del servidor')
+                }
+
+                const data = await response.json()
+
+                // Asignamos los clientes a la variable del componente
+                this.clientes = data
+            } catch(error) {
+                console.log("Error al obtener los clientes:", error)
+                // Manejo de errores
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se pudieron obtener los datos del servidor.'
+                })
+            }
+        },
         guardar() {
             // Controlar los campos que están vacíos
             if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.dni.trim() === '' || this.email.trim() === '') {
@@ -222,6 +267,10 @@ export default {
                 this.mostrarAlerta('Cliente no encontrado', 'error');
             }
         },
+        capitalizeText(text) {
+            if (!text) return '';
+            return text.charAt(0).toUpperCase() + text.slice(1);
+        }
     }
 }
 </script>
@@ -241,4 +290,5 @@ export default {
     width: 120px;
     display: inline-block;
     text-align: left;
-}</style>
+}
+</style>
