@@ -29,7 +29,7 @@
                         <input v-model="email" type="text" class="form-control" id="email" name="email">
                     </div>
                     <div class="text-center">
-                        <button type="button" class="btn btn-primary m-2" @click="guardar">Guardar</button>
+                        <button type="button" class="btn btn-primary m-2" @click="guardarCliente">Guardar</button>
                         <button type="button" class="btn btn-secondary" @click="limpiar">Limpiar</button>
                     </div>
                 </form>
@@ -189,6 +189,24 @@ export default {
 
             return confirmacion.isConfirmed;
         },
+        capitalize(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+        },
+        // alta a un usuario cliente
+        async postUsuario(usuario) {
+            try {
+                const response = await fetch('http://localhost:3000/usuarios', {
+                    method: 'POST',
+                    body: JSON.stringify(usuario),
+                    headers: {'Content-type' : 'application/json; charset=UTF-8'}
+                });
+
+                const usuarioCreado = await response.json();
+                this.usuarios = [...this.usuarios, usuarioCreado]
+            } catch (error) {
+                console.error(error)
+            }
+        },/*
         guardar() {
             // Controlar los campos que están vacíos
             if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.dni.trim() === '' || this.email.trim() === '') {
@@ -218,8 +236,66 @@ export default {
                 // Mostrar alerta de éxito
                 this.mostrarAlerta('Cliente guardado correctamente', 'success');
             }
-        },
+        },*/
+        async guardarCliente() {
+            try {
+                const validarDniNie = this.validarDniNie(); // Validar DNI/NIE
+                
+                if (validarDniNie) { // Crear el cliente con el formulario
+                    const cliente = {
+                        dni: this.dni.trim().toUpperCase(),
+                        nombre: this.nombre.trim(),
+                        apellido: this.apellido.trim(),
+                        email: this.email.trim(),
+                    };
 
+                    let url = 'http://localhost:3000/clientes';
+                    let metodo = 'POST'
+
+                    // Si hay un cliente seleccionado, es una actualización (PUT)
+                    if (this.clienteSeleccionado) {
+                        url+= `${this.clienteSeleccionado.id}`;
+                        metodo = 'PUT';
+                    }
+
+                    // Realizar la solicitud al servidor
+                    const response = await fetch(url, {
+                        method: metodo,
+                        headers: {'Content-type' : 'application/json; charset=UTF-8'},
+                        body: JSON.stringify(cliente)
+                    })
+
+                    if(!response.ok) {
+                        throw new Error('Error al guardar el cliente en el servidor.')
+                    }
+
+                    // Limpiar el formulario y obtener actualizada la lista de clientes
+                    this.limpiar();
+                    this.obtenerClientes();
+
+                    // Mostrar mensajes de éxito
+                    const mensaje = this.clienteSeleccionado ? 'Cliente modificado correctamente.' : 'Cliente guardado correctamente.';
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Éxito',
+                        text: mensaje,
+                    });
+                } else {
+                    // Mostrar alerta de error de validación
+                    this.mostrarAlerta('DNI o NIE no válido', 'error')                    
+                }
+
+            } catch (error) {
+                console.error('Error al guardar cliente', 'error')
+
+                // Mostrar mensaje de error
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error al guardar el cliente en el servidor'
+                })
+            }
+        },
         // Limpiar campos del formulario
         limpiar() {
             // Lógica para limpiar los campos del formulario
@@ -307,10 +383,6 @@ export default {
                 //mostrar alerta de error si el cliente no existe
                 this.mostrarAlerta('Cliente no encontrado', 'error');
             }
-        },
-        capitalizeText(text) {
-            if (!text) return '';
-            return text.charAt(0).toUpperCase() + text.slice(1);
         }
     }
 }
