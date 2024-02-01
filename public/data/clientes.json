@@ -1,28 +1,11 @@
 {
   "clientes": [
     {
-      "id": "8",
-      "dni": "Y2345678Z",
-      "alta": "31/10/2023",
-      "apellido": "Salam Alí",
-      "nombre": "Jasmina",
-      "direccion": "Calle Muralla, 2",
-      "provincia": "Lugo",
-      "municipio": "Láncara",
-      "movil": 775645654,
-      "email": "jasmina@cole.com"
-    },
-    {
-      "id": "9",
       "dni": "44564564V",
-      "alta": "06/11/2023",
+      "nombre": "Isabela",
       "apellido": "Santos Álvarez",
-      "nombre": "Isabel",
-      "direccion": "Calle Solano, 23, 11ºg",
-      "provincia": "Madrid",
-      "municipio": "Madrid",
-      "movil": 756789456,
-      "email": "isabel@correo.com"
+      "email": "isabel@correo.com",
+      "id": "9"
     },
     {
       "id": "10",

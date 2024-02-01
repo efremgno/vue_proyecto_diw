@@ -157,11 +157,11 @@ export default {
                 // Realizar la lógica de eliminación
                 const index = this.clientes.findIndex(cliente => cliente.id === clienteId)
 
-                if (index != -1) {
-                    this.clientes.splice(index, 1)
-                    await fetch(`http://localhost:3000/clientes/${clienteId}`), {
+                if (index !== -1) {
+                    //this.clientes.splice(index, 1)
+                    await fetch(`http://localhost:3000/clientes/${clienteId}`, {
                         method: 'DELETE',
-                    }
+                    })
                     // Mostrar alerta de éxito
                     this.mostrarAlerta('Cliente eliminado correctamente', 'succes')
                 } else {
@@ -186,7 +186,6 @@ export default {
                     cancelButton: 'custom-alert-button',
                 },
             });
-
             return confirmacion.isConfirmed;
         },
         capitalize(str) {
@@ -254,14 +253,14 @@ export default {
 
                     // Si hay un cliente seleccionado, es una actualización (PUT)
                     if (this.clienteSeleccionado) {
-                        url+= `${this.clienteSeleccionado.id}`;
+                        url+= `/${this.clienteSeleccionado.id}`;
                         metodo = 'PUT';
                     }
 
-                    // Realizar la solicitud al servidor
+                    // Realizar la solicitud al servidor JSON
                     const response = await fetch(url, {
                         method: metodo,
-                        headers: {'Content-type' : 'application/json; charset=UTF-8'},
+                        headers: {'Content-Type': 'application/json; charset=UTF-8'},
                         body: JSON.stringify(cliente)
                     })
 
@@ -376,6 +375,7 @@ export default {
                 this.apellido = cliente.apellido;
                 this.dni = cliente.dni;
                 this.email = cliente.email;
+                this.clienteSeleccionado = cliente;
 
                 // mostrar alerta de éxito
                 this.mostrarAlerta('Datos del cliente listos para modificar', 'info');
