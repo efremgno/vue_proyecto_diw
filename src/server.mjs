@@ -4,10 +4,14 @@
 import express from 'express';
 import http from 'http';
 import morgan from 'morgan';
+import tareasRouter from './router/tareas.mjs'
 
 const app = express()
 // crea el servidor
 const server = http.createServer(app)
+
+// ruta para las tareas
+app.use('/tareas', tareasRouter)
 
 // usa el puerto 5000 pero en caso de que no esté disponible usa el puerto
 app.use(morgan('dev'))
