@@ -10,10 +10,10 @@ rutas.get('/', async(req, res) => {
     res.json(tareas);
 });
 
-router.post('/', async(req, res) => {
+rutas.post('/', async(req, res) => {
     new tarea()
     console.log(new tarea())
 })
 
-model.exports = rutas;
-//export default rutas;
+//module.exports = rutas;
+export default rutas;
