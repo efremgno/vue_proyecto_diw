@@ -1,13 +1,6 @@
 {
   "clientes": [
     {
-      "dni": "44564564V",
-      "nombre": "Isabela",
-      "apellido": "Santos Álvarez",
-      "email": "isabel@correo.com",
-      "id": "9"
-    },
-    {
       "id": "10",
       "dni": "56464123C",
       "alta": "07/12/2023",

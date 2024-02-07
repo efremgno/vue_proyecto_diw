@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
-const tarea = new Schema({
+const tareaSchema = new Schema({
     nombre: String,
     descripcion: String,
     fecha: String,
     prioridad: String
-})
+    });
 
-export default mongoose.model('tarea', tarea);
+export default mongoose.model('tarea', tareaSchema);
