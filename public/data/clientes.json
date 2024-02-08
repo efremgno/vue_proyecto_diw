@@ -1,16 +1,11 @@
 {
   "clientes": [
     {
-      "id": "10",
       "dni": "56464123C",
-      "alta": "07/12/2023",
-      "apellido": "González Arias",
       "nombre": "Luis",
-      "direccion": "Calle Sentana, 2",
-      "provincia": "Asturias",
-      "municipio": "Avilés",
-      "movil": 632514652,
-      "email": "luis@caspio.com"
+      "apellido": "González Arias",
+      "email": "luis@caspio.com",
+      "id": "10"
     },
     {
       "id": "11",
