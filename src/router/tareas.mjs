@@ -1,14 +1,20 @@
 import express from 'express';
 const rutas = express.Router();
+import multer from 'multer';
 
 import tarea from '../models/tarea.mjs';
 
 rutas.use(express.json());
 // otra forma de crear rutas
+const upload = multer({ dest: 'uploads/' })
 
-rutas.get('/', async(req, res) => {
-    const tareas = await tarea.find();
-    res.json(tareas);
+rutas.get('/', async (req, res) => {
+    try {
+        const tareas = await tarea.find();
+        res.json(tareas);
+    } catch (error) {
+        res.status(500).json({ error: error.message })
+    }
 });
 
 /* Antiguo POST:
@@ -17,25 +23,31 @@ rutas.post('/', async(req, res) => {
     console.log(new tarea())
 })*/
 
-rutas.post('/', async(req, res) => {
+rutas.post('/', upload.single('archivo'), async (req, res) => {
     try {
-      const nuevatarea = new tarea(req.body);
-      
-      await nuevatarea.save();
-          console.log(nuevatarea);
-          res.json({
-          status: 'Tarea guardada'
-        
+        // Verificar si hay un archivo adjunto
+        if (req.file) {
+            console.log('Archivo recibido:', req.file) // Registrar información sobre el archivo recibido
+        } else {
+            console.log('No se recibió ningún archivo')
+        }
+        const nuevatarea = new tarea(req.body);
+
+        await nuevatarea.save();
+        console.log(nuevatarea);
+        res.json({
+            status: 'Tarea guardada'
+
         });
     } catch (error) {
-    console.error('Error al guardar la tarea:', error);
-    res.status(500).json({
-        error: 'Error al guardar la tarea'
-    });
-  } 
-  });
+        console.error('Error al guardar la tarea:', error);
+        res.status(500).json({
+            error: 'Error al guardar la tarea'
+        });
+    }
+});
 
-rutas.put ('/:id', async(req, res) => {
+rutas.put('/:id', async (req, res) => {
     try {
         await tarea.findByIdAndUpdate(req.params.id, req.body);
         res.json({
@@ -49,7 +61,7 @@ rutas.put ('/:id', async(req, res) => {
     }
 });
 
-rutas.delete ('/:id', async(req, res) => {
+rutas.delete('/:id', async (req, res) => {
     try {
         await tarea.findByIdAndDelete(req.params.id, req.body);
         res.json({

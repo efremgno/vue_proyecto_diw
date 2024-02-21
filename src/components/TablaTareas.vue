@@ -62,12 +62,21 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text custom-span">Observaciones: </span>
-                        <textarea v-model="observaciones" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción Tarea (max 256 caracteres)" maxlength="256"></textarea>
+                        <textarea v-model="observaciones" class="form-control" name="descripcion" id="descripcion"
+                            placeholder="Descripción Tarea (max 256 caracteres)" maxlength="256"></textarea>
                     </div>
                     <div class="text-center">
                         <button type="button" class="btn btn-primary m-2" @click="guardarTarea">Guardar</button>
                         <button type="button" class="btn btn-secondary" @click="modificarTarea">Modificar</button>
                         <button type="button" class="btn btn-ligth m-2" @click="limpiarCampos">Limpiar</button>
+                    </div>
+                    <!-- Input para el archivo -->
+                    <div class="custom-file">
+                        <div class="input-group mb-3 w-50">
+                            <input type="file" placeholder="Selecciona un archivo" class="custom-file-input-control"
+                                id="archivo" name="archivo" accept=".pdf, .jpg, .jpeg" @change="handleFileChange"
+                                ref="fileInput">
+                        </div>
                     </div>
                 </form>
             </div>
@@ -104,6 +113,9 @@
                                 <div>
                                     <button class="btn btn-warning m-2" @click="modificarTarea(tarea.id)"><i
                                             class="bi bi-pencil-square"></i></button>
+                                    <button type="button" class="m-2 btn btn-info" @click="mostrarInfo(tarea._id)">
+                                        <i class="bi bi-eye-fill"></i>
+                                    </button>
                                     <button class="btn btn-danger m-2" @click="eliminarTarea(tarea.id)"><i
                                             class="bi bi-trash3"></i></button>
                                 </div>
@@ -119,7 +131,8 @@
 <script>
 import NavBar from '@/components/NavBar.vue';
 import Swal from 'sweetalert2';
-//import Swal from 'sweetalert2';
+//import { format } from "date-fns";
+
 export default {
     name: 'TablaTareas',
     components: {
@@ -145,7 +158,20 @@ export default {
         async guardarTarea() {
             try {
                 console.log(this.nombre, this.descripcion, this.fecha, this.sala, this.prioridad)
-                const nuevaTarea = {
+                // crea un objeto FormData para enviar los datos de la tarea y el archivo al servidor
+                const formData = new FormData();
+                    formData.append('nombre', this.nombre);
+                    formData.append('descripcion', this.descripcion)
+                    formData.append('fecha', this.fecha);
+                    formData.append('sala', this.sala);
+                    this.equipos.forEach(equipo => {
+                        formData.append('equipos', equipo)
+                    });
+                    formData.append('prioridad', this.prioridad);
+                    formData.append('observaciones', this.observaciones);
+                    formData.append('archivo', this.archivo);
+                
+                /*const nuevaTarea = {
                     nombre: this.nombre,
                     descripcion: this.descripcion,
                     fecha: format(new Date(this.fecha), 'dd-MM-yyyy'),
@@ -153,16 +179,19 @@ export default {
                     equipos: this.equipos,
                     prioridad: this.prioridad,
                     observaciones: this.observaciones,
-                };
+                };*/
 
                 // Verificar si la prioridad está entre los valores permitidos
-                if (['alta', 'media', 'baja'].includes(nuevaTarea.prioridad)) {
+                if (['alta', 'media', 'baja'].includes(this.prioridad)) {
                     const res = await fetch('http://localhost:5000/tareas', {
                         method: 'POST',
+                        /*
                         headers: {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify(nuevaTarea)
+                        */
+                       body: formData
 
                     });
 
@@ -246,6 +275,18 @@ export default {
                 })
             }
         },
+        async obtenerTareas() {
+            try {
+                const res = await fetch('http://localhost:5000/tareas')
+                if (!res.ok) {
+                    const message = `An error has occured: ${res.status}`
+                    throw new Error(message)
+                }
+                this.tareas = await res.json()
+            } catch (error) {
+                console.error(error)
+            }
+        },
         cargarTarea(tarea) {
             this.nombre = tarea.nombre;
             this.descripcion = tarea.descripcion;
@@ -264,6 +305,8 @@ export default {
             this.equipos = [];
             this.prioridad = '';
             this.observaciones = '';
+            this.archivo = null;
+            this.$refs.fileInput.value = null;
 
             // Mostrar mensaje de éxito con SweetAlert
             Swal.fire({
@@ -280,6 +323,22 @@ export default {
             this.equipos = [];
             this.prioridad = '';
             this.observaciones = '';
+            this.$refs.fileInput.value = null;
+        },
+        mostrarInfo(id) {
+            const tarea = this.tareas.find((t) => t._id === id);
+            if (tarea) {
+                if (tarea.observaciones && tarea.observaciones.trim() !== "") {
+                    this.mostrarAlerta(
+                        `Información de la tarea: ${tarea.observaciones}`,
+                        "info"
+                    );
+                } else {
+                    this.mostrarAlerta("No tiene observaciones", "error");
+                }
+            } else {
+                this.mostrarAlerta("No se encontró la tarea", "error");
+            }
         },
     },
 }
