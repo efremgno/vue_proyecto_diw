@@ -22,7 +22,10 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text custom-span">Fecha:</span>
-                        <input v-model="fecha" type="text" class="form-control" id="fecha" name="fecha">
+                        <input ref="fechaAlta" v-model="fecha" type="text" class="form-control" id="fecha" name="fecha">
+                        <button @click="abrirCalendario" class="btn btn-outline-secondary" type="button">
+                            <i class="bi bi-calendar"></i>
+                        </button>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text  custom-span" style="margin-right: 20px;">Equipamiento:</span>
@@ -96,6 +99,8 @@
                             <th>Nombre</th>
                             <th>Descripción</th>
                             <th>Fecha Alta</th>
+                            <th>Sala Reunión</th>
+                            <th>Equipamiento</th>
                             <th>Prioridad</th>
                             <th>Gestión</th>
                         </tr>
@@ -113,9 +118,9 @@
                                 <div>
                                     <button class="btn btn-warning m-2" @click="modificarTarea(tarea.id)"><i
                                             class="bi bi-pencil-square"></i></button>
-                                    <button type="button" class="m-2 btn btn-info" @click="mostrarInfo(tarea._id)">
+                                    <!--  <button type="button" class="m-2 btn btn-info" @click="mostrarInfo(tarea._id)">
                                         <i class="bi bi-eye-fill"></i>
-                                    </button>
+                                    </button>-->
                                     <button class="btn btn-danger m-2" @click="eliminarTarea(tarea.id)"><i
                                             class="bi bi-trash3"></i></button>
                                 </div>
@@ -131,6 +136,8 @@
 <script>
 import NavBar from '@/components/NavBar.vue';
 import Swal from 'sweetalert2';
+import flatpickr from "flatpickr";
+import "flatpickr/dist/flatpickr.min.css";
 //import { format } from "date-fns";
 
 export default {
@@ -148,29 +155,44 @@ export default {
             prioridad: 'alta',
             tareas: [],
             observaciones: '',
+            archivo: null,
             show: false
         };
     },
     created() {
         this.obtenerTareas();
     },
+    mounted() {
+        const fechaAlta = this.$refs.fechaAlta;
+        flatpickr(fechaAlta, {});
+    },
     methods: {
+        abrirCalendario() {
+            const fechaAlta = this.$refs.fechaAlta;
+            if (fechaAlta._flatpickr) {
+                fechaAlta._flatpickr.open();
+            }
+        },
+        handleFileChange(event) {
+            this.archivo = event.target.files[0];
+            console.log(this.archivo);
+        },
         async guardarTarea() {
             try {
                 console.log(this.nombre, this.descripcion, this.fecha, this.sala, this.prioridad)
                 // crea un objeto FormData para enviar los datos de la tarea y el archivo al servidor
                 const formData = new FormData();
-                    formData.append('nombre', this.nombre);
-                    formData.append('descripcion', this.descripcion)
-                    formData.append('fecha', this.fecha);
-                    formData.append('sala', this.sala);
-                    this.equipos.forEach(equipo => {
-                        formData.append('equipos', equipo)
-                    });
-                    formData.append('prioridad', this.prioridad);
-                    formData.append('observaciones', this.observaciones);
-                    formData.append('archivo', this.archivo);
-                
+                formData.append('nombre', this.nombre);
+                formData.append('descripcion', this.descripcion)
+                formData.append('fecha', this.fecha);
+                formData.append('sala', this.sala);
+                this.equipos.forEach(equipo => {
+                    formData.append('equipos', equipo)
+                });
+                formData.append('prioridad', this.prioridad);
+                formData.append('observaciones', this.observaciones);
+                formData.append('archivo', this.archivo);
+
                 /*const nuevaTarea = {
                     nombre: this.nombre,
                     descripcion: this.descripcion,
@@ -191,7 +213,7 @@ export default {
                         },
                         body: JSON.stringify(nuevaTarea)
                         */
-                       body: formData
+                        body: formData
 
                     });
 
@@ -275,6 +297,33 @@ export default {
                 })
             }
         },
+        async eliminarTarea(id) {
+            try {
+                const res = await fetch(`http://localhost:5000/tareas/${id}`, {
+                    method: "DELETE",
+                });
+
+                if (!res.ok) {
+                    const message = `An error has occured: ${res.status}`;
+                    throw new Error(message);
+                }
+
+                await Swal.fire({
+                    icon: "success",
+                    title: "¡Tarea eliminada!",
+                    text: "La nueva tarea se ha eliminado correctamente.",
+                });
+
+                await this.obtenerTareas();
+            } catch (error) {
+                console.error(error);
+                await Swal.fire({
+                    icon: "error",
+                    title: "Error al eliminar la tarea",
+                    text: "Ha ocurrido un error al intentar eliminar la tarea. Por favor, inténtalo de nuevo.",
+                });
+            }
+        },
         async obtenerTareas() {
             try {
                 const res = await fetch('http://localhost:5000/tareas')
@@ -294,6 +343,7 @@ export default {
             this.sala = tarea.sala;
             this.equipos = tarea.equipos;
             this.prioridad = tarea.prioridad;
+            this.observaciones = tarea.observaciones;
             this.tareaSeleccionada = tarea;
         },
         limpiarCampos() {
@@ -324,7 +374,7 @@ export default {
             this.prioridad = '';
             this.observaciones = '';
             this.$refs.fileInput.value = null;
-        },
+        },/*
         mostrarInfo(id) {
             const tarea = this.tareas.find((t) => t._id === id);
             if (tarea) {
@@ -339,7 +389,7 @@ export default {
             } else {
                 this.mostrarAlerta("No se encontró la tarea", "error");
             }
-        },
+        },*/
     },
 }
 

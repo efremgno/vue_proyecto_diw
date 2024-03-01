@@ -5,6 +5,7 @@ import express from 'express';
 import http from 'http';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
+import cors from 'cors';
 import tareasRouter from './router/tareas.mjs'
 import multer from 'multer'
 
