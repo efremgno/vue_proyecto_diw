@@ -74,13 +74,8 @@
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text custom-span">Observaciones: </span>
-                        <textarea v-model="observaciones" class="form-control" name="descripcion" id="descripcion"
-                            placeholder="Descripción Tarea (max 256 caracteres)" maxlength="256"></textarea>
-                    </div>
-                    <div class="text-center">
-                        <button type="button" class="btn btn-primary m-2" @click="guardarTarea">Guardar</button>
-                        <button type="button" class="btn btn-secondary" @click="modificarTarea">Modificar</button>
-                        <button type="button" class="btn btn-ligth m-2" @click="limpiarCampos">Limpiar</button>
+                        <textarea v-model="observaciones" class="form-control" name="observaciones" id="observaciones"
+                            placeholder="Observaciones tarea (max 256 caracteres)" maxlength="256"></textarea>
                     </div>
                     <!-- Input para el archivo -->
                     <div class="custom-file">
@@ -89,6 +84,11 @@
                                 id="archivo" name="archivo" accept=".pdf, .jpg, .jpeg" @change="handleFileChange"
                                 ref="fileInput">
                         </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary m-2" @click="guardarTarea">Guardar</button>
+                        <button type="button" class="btn btn-secondary" @click="modificarTarea">Modificar</button>
+                        <button type="button" class="btn btn-ligth m-2" @click="limpiarCampos">Limpiar</button>
                     </div>
                 </form>
             </div>
@@ -201,7 +201,8 @@ export default {
                 formData.append('prioridad', this.prioridad);
                 formData.append('observaciones', this.observaciones);
                 formData.append('archivo', this.archivo);
-
+                console.log(this.observaciones);
+                console.log(formData);
                 /*const nuevaTarea = {
                     nombre: this.nombre,
                     descripcion: this.descripcion,
@@ -283,7 +284,7 @@ export default {
                     }
                     // Actualizar la lista de tareas después de guardar la nueva tarea
                     await this.obtenerTareas();
-                    
+
                     this.tareaSeleccionada = null;
                     await Swal.fire({
                         icon: 'success',

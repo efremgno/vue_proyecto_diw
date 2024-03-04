@@ -7,7 +7,8 @@ const tareaSchema = new Schema({
     fecha: String,
     sala: String,
     equipos: [String],
-    prioridad: String
+    prioridad: String,
+    observaciones: String
     });
 
 export default mongoose.model('tarea', tareaSchema);
