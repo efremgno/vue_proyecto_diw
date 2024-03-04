@@ -20,18 +20,6 @@
       "email": "agustin@social.com"
     },
     {
-      "id": "12",
-      "dni": "00504239X",
-      "alta": "30/10/2023",
-      "apellido": "Pérez Segarra",
-      "nombre": "Daniel",
-      "direccion": "Calle Manga Del Mar Menor, 12 8ºa",
-      "provincia": "Murcia",
-      "municipio": "Caravaca de la Cruz",
-      "movil": 654123489,
-      "email": "daniel@lopero.com"
-    },
-    {
       "id": "13",
       "dni": "19727411N",
       "alta": "06/09/2023",
@@ -164,16 +152,11 @@
       "email": "alfredo@maul.com"
     },
     {
-      "id": "24",
       "dni": "Y6382360N",
-      "alta": "30/10/2023",
-      "apellido": "Faro Dacosta",
       "nombre": "Jesús",
-      "direccion": "Calle Costa, 5  2º F",
-      "provincia": "Lugo",
-      "municipio": "Viveiro",
-      "movil": 774578974,
-      "email": "kunta@yahoo.net"
+      "apellido": "Faro Dacosta",
+      "email": "kuntas@yahoo.net",
+      "id": "24"
     },
     {
       "id": "25",

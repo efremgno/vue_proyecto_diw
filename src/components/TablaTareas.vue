@@ -5,7 +5,7 @@
     </div>
     <br />
     <div class="row">
-        <h3 class="text-center font-weight-bold">Gestión clientes</h3>
+        <h3 class="text-center font-weight-bold">Gestión Tareas</h3>
     </div>
     <hr> <!-- Formulario -->
     <div class="container-fluid">
@@ -26,6 +26,15 @@
                         <button @click="abrirCalendario" class="btn btn-outline-secondary" type="button">
                             <i class="bi bi-calendar"></i>
                         </button>
+                    </div>
+                    <div class="input-group mb-3 w-25">
+                        <label class="input-group-text custom-span" for="salaSelect">Sala:
+                        </label>
+                        <select class="form-select" v-model="sala" id="salaSelect">
+                            <option value="Sala 1">Sala 1</option>
+                            <option value="Sala 2">Sala 2</option>
+                            <option value="Sala 3">Sala 3</option>
+                        </select>
                     </div>
                     <div class="input-group mb-3">
                         <span class="input-group-text  custom-span" style="margin-right: 20px;">Equipamiento:</span>
@@ -107,7 +116,7 @@
                     </thead>
                     <tbody>
                         <tr v-for="tarea in tareas" :key="tarea.id">
-                            <td class="text-center">{{ tarea.id }}</td>
+                            <td class="text-center">{{ tarea._id }}</td>
                             <td>{{ tarea.nombre }}</td>
                             <td>{{ tarea.descripcion }}</td>
                             <td class="text-center">{{ tarea.fecha }}</td>
@@ -116,12 +125,12 @@
                             <td class="text-center">{{ tarea.prioridad }}</td>
                             <td class="text-center">
                                 <div>
-                                    <button class="btn btn-warning m-2" @click="modificarTarea(tarea.id)"><i
+                                    <button class="btn btn-warning m-2" @click="cargarTarea(tarea)"><i
                                             class="bi bi-pencil-square"></i></button>
                                     <!--  <button type="button" class="m-2 btn btn-info" @click="mostrarInfo(tarea._id)">
                                         <i class="bi bi-eye-fill"></i>
                                     </button>-->
-                                    <button class="btn btn-danger m-2" @click="eliminarTarea(tarea.id)"><i
+                                    <button class="btn btn-danger m-2" @click="eliminarTarea(tarea._id)"><i
                                             class="bi bi-trash3"></i></button>
                                 </div>
                             </td>
@@ -269,20 +278,18 @@ export default {
                         },
                         body: JSON.stringify(tarea)
                     });
-
+                    if (!res.ok) {
+                        throw new Error(`An error has occurred: ${res.status}`);
+                    }
+                    // Actualizar la lista de tareas después de guardar la nueva tarea
+                    await this.obtenerTareas();
+                    
+                    this.tareaSeleccionada = null;
                     await Swal.fire({
                         icon: 'success',
                         title: '¡Tarea guardada!',
                         text: 'La nueva tarea se ha guardado correctamente.'
                     });
-
-                    if (!res.ok) {
-                        const message = `Ha ocurrido un error: ${res.status}`;
-                        throw new Error(message);
-                    }
-
-                    // Actualizar la lista de tareas después de guardar la nueva tarea
-                    await this.obtenerTarea();
                 }
                 // Limpiar los campos del formulario después de guardar la tarea
                 this.limpiarTarea();
@@ -337,6 +344,7 @@ export default {
             }
         },
         cargarTarea(tarea) {
+            this.id = tarea._id;
             this.nombre = tarea.nombre;
             this.descripcion = tarea.descripcion;
             this.fecha = tarea.fecha;
