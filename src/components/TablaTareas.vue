@@ -3,7 +3,6 @@
         <!-- Barra de navegación -->
         <NavBar />
     </div>
-    <br />
     <div class="row">
         <h3 class="text-center font-weight-bold">Gestión Tareas</h3>
     </div>
@@ -420,4 +419,7 @@ export default {
     display: inline-block;
     text-align: left;
 }
+h3 {
+        padding-top: 30px;
+    }
 </style>

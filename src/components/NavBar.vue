@@ -12,6 +12,7 @@
                 <router-link v-if="articulosExists" to="/articulos" class="navbar-brand">Artículos</router-link>
                 <router-link v-if="ventasExists" to="/ventas" class="navbar-brand">Ventas</router-link>
                 <router-link v-if="tareasExists" to="/tareas" class="navbar-brand">Tareas</router-link>
+                <router-link v-if="productosExists" to="/productos" class="navbar-brand">Productos</router-link>
                 <router-link v-if="contactoExists" to="/contacto" class="navbar-brand">Contacto</router-link>
                 <!-- Buscador -->
                 <form class="d-flex">
@@ -27,8 +28,8 @@
                         <li class="nav-item" v-if="clientesExists">
                             <router-link to="/clientes" class="nav-link">Clientes</router-link>
                         </li>
-                        <li class="nav-item" v-if="articulosExists">
-                            <router-link to="/articulos" class="nav-link">Artículos</router-link>
+                        <li class="nav-item" v-if="productosExists">
+                            <router-link to="/productos" class="nav-link">Productos</router-link>
                         </li>
                         <li class="nav-item" v-if="ventasExists">
                             <router-link to="/ventas" class="nav-link">Ventas</router-link>
@@ -57,8 +58,8 @@
             ventasExists() {
                 return this.$router.hasRoute('ventas')
             },
-            articulosExists() {
-                return this.$router.hasRoute('articulos')
+            productosExists() {
+                return this.$router.hasRoute('productos')
             },
             tareasExists() {
                 return this.$router.hasRoute("tareas")

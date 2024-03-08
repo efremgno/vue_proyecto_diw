@@ -21,9 +21,9 @@
             </div>
             <div class="row mx-auto">
                 <div class="col">
-                    <router-link to="/articulos" class="navbar-brand">
+                    <router-link to="/productos" class="navbar-brand">
                         <button type="button" class="btn btn-primary btn-lg m-3 p-5 w-25">
-                            Gestión Artículos
+                            Gestión Productos
                         </button>
                     </router-link>
                     <button type="button" class="btn btn-primary btn-lg m-3 p-5 w-25">Gestión ventas</button>

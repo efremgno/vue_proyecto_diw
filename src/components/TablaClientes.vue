@@ -3,7 +3,6 @@
         <!-- Barra de navegación -->
         <NavBar />
     </div>
-    <br />
     <div class="row">
         <h3 class="text-center font-weight-bold">Gestión clientes</h3>
     </div>
@@ -127,7 +126,7 @@ export default {
     methods: {
         async obtenerClientes() {
             try {
-                // AHora hacemos una solicitud directamente al servidor JSON
+                // Ahora hacemos una solicitud directamente al servidor JSON
                 const response = await fetch('http://localhost:3000/clientes')
 
                 if (!response.ok) {
@@ -197,7 +196,7 @@ export default {
                 const response = await fetch('http://localhost:3000/usuarios', {
                     method: 'POST',
                     body: JSON.stringify(usuario),
-                    headers: {'Content-type' : 'application/json; charset=UTF-8'}
+                    headers: { 'Content-type': 'application/json; charset=UTF-8' }
                 });
 
                 const usuarioCreado = await response.json();
@@ -239,7 +238,7 @@ export default {
         async guardarCliente() {
             try {
                 const validarDniNie = this.validarDniNie(); // Validar DNI/NIE
-                
+
                 if (validarDniNie) { // Crear el cliente con el formulario
                     const cliente = {
                         dni: this.dni.trim().toUpperCase(),
@@ -253,18 +252,18 @@ export default {
 
                     // Si hay un cliente seleccionado, es una actualización (PUT)
                     if (this.clienteSeleccionado) {
-                        url+= `/${this.clienteSeleccionado.id}`;
+                        url += `/${this.clienteSeleccionado.id}`;
                         metodo = 'PUT';
                     }
 
                     // Realizar la solicitud al servidor JSON
                     const response = await fetch(url, {
                         method: metodo,
-                        headers: {'Content-Type': 'application/json; charset=UTF-8'},
+                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
                         body: JSON.stringify(cliente)
                     })
 
-                    if(!response.ok) {
+                    if (!response.ok) {
                         throw new Error('Error al guardar el cliente en el servidor.')
                     }
 
@@ -281,7 +280,7 @@ export default {
                     });
                 } else {
                     // Mostrar alerta de error de validación
-                    this.mostrarAlerta('DNI o NIE no válido', 'error')                    
+                    this.mostrarAlerta('DNI o NIE no válido', 'error')
                 }
 
             } catch (error) {
@@ -403,5 +402,9 @@ export default {
     width: 120px;
     display: inline-block;
     text-align: left;
+}
+
+h3 {
+    padding-top: 30px;
 }
 </style>
